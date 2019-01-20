@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Map, GoogleApiWrapper} from 'google-maps-react'
+import {Map, GoogleApiWrapper, Marker, Circle} from 'google-maps-react'
 import {apiKey} from '../../apikey'
 
 export class MapContainer extends Component {
@@ -7,23 +7,45 @@ export class MapContainer extends Component {
     super()
     this.state = {
       lat: "",
-      lon: ""
+      lon: "",
     }
   }
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(location => {
-      // this.setState({
-      //   lat: location.coords.latitude,
-      //   lon: location.coords.longitude
-      // })   
+      console.log(location)
+      this.setState({
+        lat: location.coords.latitude,
+        lon: location.coords.longitude,
+      })   
     })
   }
+
+  // areaCirle(coords) {
+  //   return (
+  //     <Circle
+  //         radius={1200}
+  //         center={coords}
+  //         onMouseover={() => console.log('mouseover')}
+  //         onClick={() => console.log('click')}
+  //         onMouseout={() => console.log('mouseout')}
+  //         strokeColor='transparent'
+  //         strokeOpacity={0}
+  //         strokeWeight={5}
+  //         fillColor='#FF0000'
+  //         fillOpacity={0.2}
+  //      />
+  //   )
+  // }
   render() {
+    const coords = { lat: this.state.lat, lng: this.state.lon }
     return (
         <Map 
             className="map"
             google={this.props.google}
-            zoom={14}>
+            zoom={14}
+            center={coords}  
+        >
+          <Marker position={{lat: this.state.lat, lng: this.state.lon}} />
         </Map>
     );
   }
