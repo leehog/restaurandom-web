@@ -1,7 +1,23 @@
 import React, {Component} from 'react'
-import {Map, GoogleApiWrapper} from 'google-maps-react';
+import {Map, GoogleApiWrapper} from 'google-maps-react'
+import {apiKey} from '../../apikey'
 
 export class MapContainer extends Component {
+  constructor() {
+    super()
+    this.state = {
+      lat: "",
+      lon: ""
+    }
+  }
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(location => {
+      // this.setState({
+      //   lat: location.coords.latitude,
+      //   lon: location.coords.longitude
+      // })   
+    })
+  }
   render() {
     return (
         <Map 
@@ -14,5 +30,5 @@ export class MapContainer extends Component {
 }
 
 export default GoogleApiWrapper({
-  apiKey: ('AIzaSyDK0-sFxTBQlrFoLZfYvcxbjqe7zc0V9_M')
+  apiKey: (apiKey)
 })(MapContainer)
