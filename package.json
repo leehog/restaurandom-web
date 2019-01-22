@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "google-maps-react": "^2.0.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
@@ -28,5 +29,6 @@
     "chai": "^4.2.0",
     "flow-bin": "^0.91.0",
     "mocha": "^5.2.0"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }

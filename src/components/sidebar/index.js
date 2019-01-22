@@ -1,5 +1,7 @@
 // @flow
 import React, {Component} from 'react'
+import axios from 'axios'
+import {apiKey} from '../../apikey'
 
 type Genre = [
     {
@@ -40,19 +42,28 @@ export const genres = [
     }
 ]
 
-class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, sliderValue: number }> {
+class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, sliderValue: number, lat: any, lon: any }> {
     constructor(props: any) {
         super(props)
         this.state = {
             genres: [],
             chosenCategory: "",
-            sliderValue: 500
+            sliderValue: 500,
+            lat: "",
+            lon: ""
         }
     }
 
     componentDidMount() {
         this.setState({
             genres
+        })
+        navigator.geolocation.getCurrentPosition(location => {
+            console.log(location)
+            this.setState({
+              lat: location.coords.latitude,
+              lon: location.coords.longitude,
+            })   
         })
     }
 
@@ -61,6 +72,16 @@ class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, s
             ...this.state,
             chosenCategory: cat
         })
+    }
+
+    searchQuery() {
+        if(this.state.lat) {
+            console.log("running query")
+            const { lat, lon, sliderValue, chosenCategory } = this.state
+            axios.get('http://localhost:5000/find/'+lat+','+lon+'/'+sliderValue+'/'+chosenCategory).then(res => {
+                console.log(res)
+            })
+        }      
     }
 
     onSliderChange(e) {
@@ -81,10 +102,10 @@ class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, s
                 <p>Chosen category: { this.state.chosenCategory ? <span className="chosen-cat">{this.state.chosenCategory}</span> : ""}</p>
                 <p class="range-field">
                     <input type="range" id="test5" min="500" max="3000" value={this.state.sliderValue} onChange={(e) => this.onSliderChange(e)}/>
-                    <span>{this.state.sliderValue}</span>
+                    <span>Radius: {this.state.sliderValue} meters</span>
                 </p>
 
-                <button className="waves-effect waves-light btn">Find restaurant</button>
+                <button className="waves-effect waves-light btn" onClick={() => this.searchQuery()}>Find restaurant</button>
             </React.Fragment>
         )
     }
