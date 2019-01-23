@@ -41,6 +41,14 @@ export const genres = [
     {
         "title": "indian",
         "img": "https://media-cdn.tripadvisor.com/media/photo-s/10/24/98/99/veg-and-non-veg-halal.jpg"
+    }, 
+    {
+        "title": "kebab",
+        "img": "http://www.afghankitchenrecipes.com/wp-content/uploads/2016/10/Kabab_Koobideh-575x262.jpg"
+    },
+    {
+        "title": "italian",
+        "img": "https://www.bonappetour.com/blog/wp-content/uploads/2015/03/1426576690-7820792-1030x521.jpeg"
     }
 ]
 
@@ -89,7 +97,8 @@ class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, s
         this.toggleSpinner()
         if(this.state.lat) {
             console.log("running query")
-            const { lat, lon, sliderValue, chosenCategory } = this.state
+            const { lat, lon, sliderValue } = this.state
+            const chosenCategory = this.state.chosenCategory ? this.state.chosenCategory : "restaurant"
             axios.get('http://localhost:5000/find/'+lat+','+lon+'/'+sliderValue+'/'+chosenCategory).then(res => {
                 this.setState({
                     ...this.state,

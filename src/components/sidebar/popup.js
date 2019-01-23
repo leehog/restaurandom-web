@@ -6,7 +6,7 @@ const Popup = (props) => {
     <div className="popup">
         <div className="popup-content z-depth-5">
             <h3>{props.restaurant.name}</h3>
-            <h4>Address: {props.restaurant.vicinity}</h4>
+            <h4>{props.restaurant.vicinity}</h4>
         </div>
     </div>
     )
