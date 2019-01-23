@@ -2,6 +2,8 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import {apiKey} from '../../apikey'
+import ClipLoader from 'react-spinners/ClipLoader'
+import Popup from './popup'
 
 type Genre = [
     {
@@ -42,7 +44,7 @@ export const genres = [
     }
 ]
 
-class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, sliderValue: number, lat: any, lon: any }> {
+class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, sliderValue: number, lat: any, lon: any, loading: boolean, result: Object }> {
     constructor(props: any) {
         super(props)
         this.state = {
@@ -50,7 +52,9 @@ class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, s
             chosenCategory: "",
             sliderValue: 500,
             lat: "",
-            lon: ""
+            lon: "",
+            loading: false,
+            result: ""
         }
     }
 
@@ -74,12 +78,27 @@ class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, s
         })
     }
 
+    toggleSpinner() {
+        this.setState({
+            ...this.state,
+            loading: !this.state.loading
+        })
+    }
+
     searchQuery() {
+        this.toggleSpinner()
         if(this.state.lat) {
             console.log("running query")
             const { lat, lon, sliderValue, chosenCategory } = this.state
             axios.get('http://localhost:5000/find/'+lat+','+lon+'/'+sliderValue+'/'+chosenCategory).then(res => {
-                console.log(res)
+                this.setState({
+                    ...this.state,
+                    result: res.data.result,
+                })
+            }).then( () => {
+                this.toggleSpinner()
+            }).catch(e => {
+                console.log(e)
             })
         }      
     }
@@ -106,6 +125,23 @@ class Sidebar extends Component<any, { genres: Genres, chosenCategory: string, s
                 </p>
 
                 <button className="waves-effect waves-light btn" onClick={() => this.searchQuery()}>Find restaurant</button>
+                {
+                    this.state.loading ? 
+                            <div className='sweet-loading'>
+                                <ClipLoader
+                                    sizeUnit={"px"}
+                                    size={150}
+                                    color={'#123abc'}
+                                    loading={this.state.loading}
+                                />
+                            </div>
+                        : ""
+                }
+                {
+                    this.state.result ? 
+                            <Popup restaurant={this.state.result}/>
+                    : ""
+                }
             </React.Fragment>
         )
     }
